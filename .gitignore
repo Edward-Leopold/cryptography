@@ -1,0 +1,27 @@
+# Build results
+[Bb]in/
+[Oo]bj/
+
+# IDE files
+.vs/
+.idea/
+*.user
+*.suo
+
+# Project files
+*.csproj.user
+
+# NuGet packages
+*.nupkg
+packages/
+
+# Runtime files
+appsettings.json
+appsettings.*.json
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Rider specific
+*.sln.iml
