@@ -25,41 +25,26 @@ namespace cryptography.Utilities;
             throw new Exception("position in P-block table is out of range");
         }
         
-        byte[] output = new byte[value.Length];
+        int outputLength = permRule.Length / 8 + (permRule.Length % 8 == 0 ? 0 : 1); 
+        byte[] output = new byte[outputLength];
         byte[] input = new byte[value.Length];
         value.CopyTo(input, 0);
         
-        if (bitIndexMode == BitsIndexingMode.HighToLow)
-        {
-            PermBitsInBytes(ref input);
-        }
-        
         if (bitIndexMode == BitsIndexingMode.LowToHigh)
-        {
+        {   
+            PermBitsInBytes(ref input);
             Array.Reverse(input);
         }
 
         for (int i = 0, j = 0; i < permRule.Length && j < value.Length * 8; i++, j++)
         {   
             int pos = permRule[i] - start;
-            int oldByteInd = pos / 8;
-            int oldBitInd = pos % 8;
-            int newByteInd = i / 8;
-            int newBitInd = i % 8;
-
-            if ( (input[oldByteInd] & (1 << oldBitInd)) != 0 )
-            {
-                output[newByteInd] |= (byte)(1 << newBitInd);
-            } // вынести потом перестановку бита
-        }
-
-        if (bitIndexMode == BitsIndexingMode.HighToLow)
-        {
-            PermBitsInBytes(ref output);
+            PlaceBitToPosition.Place(ref input, ref output, (uint)pos, (uint)i);
         }
         
         if (bitIndexMode == BitsIndexingMode.LowToHigh)
         {
+            PermBitsInBytes(ref output);
             Array.Reverse(output);
         }
 
