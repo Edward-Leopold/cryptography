@@ -1,4 +1,4 @@
-using System.Xml.XPath;
+using cryptography.Utilities;
 using cryptography.interfaces;
 
 namespace cryptography.feistel;
@@ -40,7 +40,7 @@ public class FeistelNetwork
         foreach (var roundKey in roundKeys)
         {   
             byte[] fRes = _roundEncryption.EncryptRoundConversion(right, roundKey);
-            byte[] newRight = Xor(left, fRes);
+            byte[] newRight = BitOperations.Xor(left, fRes);
             left = right;
             right = newRight;
         }
@@ -49,14 +49,14 @@ public class FeistelNetwork
         return result;
     }
     
-    private byte[] Xor(byte[] a, byte[] b) {
-        if (a.Length != b.Length) {
-            throw new ArgumentException("Input length must be equal to output length.");
-        }
-        byte[] result = new byte[b.Length];
-        for (int i = 0; i < b.Length; i++) {
-            result[i] = (byte) (a[i] ^ b[i]);
-        }
-        return result;
-    }
+    // private byte[] Xor(byte[] a, byte[] b) {
+    //     if (a.Length != b.Length) {
+    //         throw new ArgumentException("Input length must be equal to output length.");
+    //     }
+    //     byte[] result = new byte[b.Length];
+    //     for (int i = 0; i < b.Length; i++) {
+    //         result[i] = (byte) (a[i] ^ b[i]);
+    //     }
+    //     return result;
+    // }
 }

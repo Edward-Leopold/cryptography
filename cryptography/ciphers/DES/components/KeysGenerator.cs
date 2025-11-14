@@ -1,11 +1,12 @@
 using cryptography.Utilities;
 using cryptography.ciphers.DES.constants;
+using cryptography.interfaces;
 
 namespace cryptography.ciphers.DES.components;
 
-public static class KeysGenerator
+public class KeysGenerator : IRoundKeysGenerator
 {
-    public static byte[][] GenerateRoundKeys(in byte[] key)
+    public byte[][] GenerateRoundKeys(in byte[] key)
     {
         if (key == null)
         {
@@ -31,7 +32,7 @@ public static class KeysGenerator
                 }
             }
 
-            keyCopy = PBlock.Permutation(keyCopy, DesConstants.PC1, PBlock.BitsIndexingMode.HighToLow, 1);
+            keyCopy = Permutations.PermutateByTable(keyCopy, DesConstants.PC1, Permutations.BitsIndexingMode.HighToLow, 1);
         }
 
         byte[] c_0 = new byte[4];
@@ -64,7 +65,7 @@ public static class KeysGenerator
                 BitOperations.PlaceBitToPosition(ref d_i, ref cd, (uint)(t - 28), (uint)t);
             }
             
-            keys[i] = PBlock.Permutation(cd,  DesConstants.PC2, PBlock.BitsIndexingMode.HighToLow, 1);
+            keys[i] = Permutations.PermutateByTable(cd,  DesConstants.PC2, Permutations.BitsIndexingMode.HighToLow, 1);
             
             prevC = c_i;
             prevD = d_i;

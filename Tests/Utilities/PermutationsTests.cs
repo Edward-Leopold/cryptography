@@ -2,7 +2,7 @@ using cryptography.Utilities;
 
 namespace Tests.Utilities;
 
-public class PBlockTests
+public class PermutationsTests
 {
     [Theory]
     [InlineData(
@@ -24,7 +24,7 @@ public class PBlockTests
             22, 11, 4, 25,
         ];
 
-        byte[] output = PBlock.Permutation(input, pBlock, PBlock.BitsIndexingMode.LowToHigh, 1);
+        byte[] output = Permutations.PermutateByTable(input, pBlock, Permutations.BitsIndexingMode.LowToHigh, 1);
 
         // Assert
         Assert.Equal(expected, output);
@@ -49,7 +49,7 @@ new byte[] { 0b11111111, 0b11111111, 0b11111111, 0b11111110 }
             22, 11, 4, 25,
         ]; 
     
-        byte[] output = PBlock.Permutation(input, pBlock, PBlock.BitsIndexingMode.HighToLow, 1);
+        byte[] output = Permutations.PermutateByTable(input, pBlock, Permutations.BitsIndexingMode.HighToLow, 1);
     
         // Assert
         Assert.Equal(expected, output);

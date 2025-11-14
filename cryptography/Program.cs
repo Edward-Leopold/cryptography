@@ -21,7 +21,7 @@ class Program
             // byte[] input2 = [ 0b11111111, 0b11111111, 0b11111111, 0b01111111 ];
             byte[] input3 = [ 0b11111110, 0b11111111, 0b11111111, 0b11111111 ];
             
-            byte[] output = PBlock.Permutation(input3, pBlock, PBlock.BitsIndexingMode.LowToHigh, 1);
+            byte[] output = Permutations.PermutateByTable(input3, pBlock, Permutations.BitsIndexingMode.LowToHigh, 1);
                 
             foreach (byte b in input3)
             {
