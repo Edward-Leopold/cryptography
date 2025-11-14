@@ -4,7 +4,7 @@ namespace cryptography.components;
 
 public static class KeysGenerator
 {
-    public static byte[][] GenerateKeys(in byte[] key)
+    public static byte[][] GenerateRoundKeys(in byte[] key)
     {
         if (key == null)
         {
