@@ -39,7 +39,7 @@ namespace cryptography.Utilities;
         for (int i = 0, j = 0; i < permRule.Length && j < value.Length * 8; i++, j++)
         {   
             int pos = permRule[i] - start;
-            PlaceBitToPosition.Place(ref input, ref output, (uint)pos, (uint)i);
+            BitOperations.PlaceBitToPosition(ref input, ref output, (uint)pos, (uint)i);
         }
         
         if (bitIndexMode == BitsIndexingMode.LowToHigh)
@@ -54,7 +54,7 @@ namespace cryptography.Utilities;
         {
             for (int i = 0; i < bytes.Length; ++i)
             {
-                bytes[i] = BitsPermutation.Permutate(bytes[i]);
+                bytes[i] = BitOperations.Permutate(bytes[i]);
             }
         }
     }
