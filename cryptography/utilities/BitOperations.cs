@@ -56,4 +56,16 @@ public static class BitOperations
                 data[destByteIndex] &= (byte)~(1 << (7 - destBitIndex));
         }
     }
+    
+    /// <summary>bytes arrays must be equal length</summary>
+    public static byte[] Xor(byte[] a, byte[] b) {
+        if (a.Length != b.Length) {
+            throw new ArgumentException("Input length must be equal to output length.");
+        }
+        byte[] result = new byte[b.Length];
+        for (int i = 0; i < b.Length; i++) {
+            result[i] = (byte) (a[i] ^ b[i]);
+        }
+        return result;
+    }
 }
