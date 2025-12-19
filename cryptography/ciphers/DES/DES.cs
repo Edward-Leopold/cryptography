@@ -24,8 +24,7 @@ public class DES : ISymmetricEncryption
         if (_key == null) throw new InvalidOperationException("Key not set");
         var permuted = Permutations.PermutateByTable(data, DesConstants.IP, Permutations.BitsIndexingMode.HighToLow, 1);
         var encrypted = _network.Encrypt(permuted, _key);
-        var inversionPermuted =
-            Permutations.PermutateByTable(encrypted, DesConstants.IP_INV, Permutations.BitsIndexingMode.HighToLow, 1);
+        var inversionPermuted = Permutations.PermutateByTable(encrypted, DesConstants.IP_INV, Permutations.BitsIndexingMode.HighToLow, 1);
         return inversionPermuted;
     }
     
@@ -33,7 +32,7 @@ public class DES : ISymmetricEncryption
     {
         if (_key == null) throw new InvalidOperationException("Key not set");
         var permuted = Permutations.PermutateByTable(data, DesConstants.IP, Permutations.BitsIndexingMode.HighToLow, 1);
-        var decrypted = _network.Encrypt(permuted, _key);
+        var decrypted = _network.Decrypt(permuted, _key);
         var inversionPermuted =
             Permutations.PermutateByTable(decrypted, DesConstants.IP_INV, Permutations.BitsIndexingMode.HighToLow, 1);
         return inversionPermuted;

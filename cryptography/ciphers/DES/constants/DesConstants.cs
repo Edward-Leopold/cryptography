@@ -64,7 +64,7 @@ public static class DesConstants
         28, 29, 30, 31, 32,  1
     ];
     
-    public static int[][][] S = [
+    public static uint[][][] S = [
         [ 
             [14,4,13,1,2,15,11,8,3,10,6,12,5,9,0,7],
             [0,15,7,4,14,2,13,1,10,6,12,11,9,5,3,8],

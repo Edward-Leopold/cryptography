@@ -36,7 +36,7 @@ namespace cryptography.Utilities;
             Array.Reverse(input);
         }
 
-        for (int i = 0, j = 0; i < permTable.Length && j < value.Length * 8; i++, j++)
+        for (int i = 0; i < permTable.Length; i++)
         {   
             int pos = permTable[i] - start;
             BitOperations.PlaceBitToPosition(ref input, ref output, (uint)pos, (uint)i);

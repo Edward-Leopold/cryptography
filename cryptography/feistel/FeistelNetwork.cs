@@ -45,18 +45,7 @@ public class FeistelNetwork
             right = newRight;
         }
         
-        byte[] result = left.Concat(right).ToArray();
+        byte[] result = right.Concat(left).ToArray();
         return result;
     }
-    
-    // private byte[] Xor(byte[] a, byte[] b) {
-    //     if (a.Length != b.Length) {
-    //         throw new ArgumentException("Input length must be equal to output length.");
-    //     }
-    //     byte[] result = new byte[b.Length];
-    //     for (int i = 0; i < b.Length; i++) {
-    //         result[i] = (byte) (a[i] ^ b[i]);
-    //     }
-    //     return result;
-    // }
 }

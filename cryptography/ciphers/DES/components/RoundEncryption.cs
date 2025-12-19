@@ -23,18 +23,18 @@ public class RoundEncryption : IRoundEncryption
             throw new ArgumentException("Size of xored block must be 6 bytes");
         }
         
-        long input48Bit = 0;
+        ulong input48Bit = 0;
         for (int i = 0; i < 6; i++) {
             input48Bit = (input48Bit << 8) | xored[i];
         }
         
-        long output32Bit = 0;
+        ulong output32Bit = 0;
         for (int i = 0; i < 8; i++) {
             int shift = (7 - i) * 6;
-            long bits6 = (input48Bit >> shift) & 0x3F; 
+            ulong bits6 = (input48Bit >> shift) & 0x3F; 
 
-            long row = ((bits6 & 0x20) >> 4) | (bits6 & 0x01);
-            long column = ((bits6 >> 1) & 0x0F);
+            ulong row = ((bits6 & 0x20) >> 4) | (bits6 & 0x01);
+            ulong column = ((bits6 >> 1) & 0x0F);
 
             output32Bit = (output32Bit << 4) | (DesConstants.S[i][(int)row][(int)column] & 0x0F);
         }
