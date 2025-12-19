@@ -23,8 +23,6 @@ public class DesSymmetricTests
         
         var des = new cryptography.ciphers.DES.DES();
         
-        // Используем твой контекст. 
-        // ВАЖНО: PKCS7 добавит второй блок набивки, так как 8 байт кратны размеру блока.
         var context = new SymmetricContext(
             des, 
             key, 
@@ -42,17 +40,15 @@ public class DesSymmetricTests
     [Fact]
     public async Task Des_FullCycle_StringMessage_ShouldWork()
     {
-        byte[] key = Encoding.UTF8.GetBytes("key12345"); // 8 байт
-        byte[] data = Encoding.UTF8.GetBytes("SecretMessage"); // 13 байт (не кратно 8)
+        byte[] key = Encoding.UTF8.GetBytes("key12345");
+        byte[] data = Encoding.UTF8.GetBytes("SecretMessage"); 
         
         var des = new cryptography.ciphers.DES.DES();
         var context = new SymmetricContext(des, key, EncryptionModes.ECB, PaddingModes.PKCS7);
-
-        // Act
+        
         byte[] encrypted = await context.EncryptAsync(data);
         byte[] decrypted = await context.DecryptAsync(encrypted);
 
-        // Assert
         Assert.Equal(data, decrypted);
         Assert.Equal("SecretMessage", Encoding.UTF8.GetString(decrypted));
     }
@@ -66,7 +62,6 @@ public class DesSymmetricTests
         var des = new cryptography.ciphers.DES.DES();
         var context = new SymmetricContext(des, key, EncryptionModes.ECB, PaddingModes.PKCS7);
 
-        // Act
         byte[] encrypted = await context.EncryptAsync(data);
         byte[] decrypted = await context.DecryptAsync(encrypted);
         
@@ -74,26 +69,100 @@ public class DesSymmetricTests
         _output.WriteLine($"Зашифрованные байты: {BitConverter.ToString(encrypted)}");
         _output.WriteLine($"Расшифрованный текст: {Encoding.UTF8.GetString(decrypted)}");
         
-        // Assert
         Assert.Equal(data, decrypted);
         Assert.Equal("SecretMessage", Encoding.UTF8.GetString(decrypted));
     }
     
     [Fact]
-    public void Permutations_IP_Then_IPINV_ShouldBeIdentity()
+    public async Task Des_Img_Test()
     {
-        byte[] data = { 0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF };
-    
-        // Применяем начальную перестановку
-        var ip = cryptography.Utilities.Permutations.PermutateByTable(
-            data, cryptography.ciphers.DES.constants.DesConstants.IP, 
-            cryptography.Utilities.Permutations.BitsIndexingMode.HighToLow, 1);
-        
-        // Применяем инверсную перестановку
-        var ipInv = cryptography.Utilities.Permutations.PermutateByTable(
-            ip, cryptography.ciphers.DES.constants.DesConstants.IP_INV, 
-            cryptography.Utilities.Permutations.BitsIndexingMode.HighToLow, 1);
+        string baseDir = AppContext.BaseDirectory;
+        string inPath = Path.Combine(baseDir, "../../../TestFiles/test.jpg"); 
+        string outPathEnc = Path.Combine(baseDir, "../../../DES/results/encrypted/test_encrypted.jpg");
+        string outPathDec = Path.Combine(baseDir, "../../../DES/results/decrypted/test_decrypted.jpg");
 
-        Assert.Equal(data, ipInv);
+        if (!File.Exists(inPath)) 
+            throw new FileNotFoundException("Исходный файл не найден по пути: " + Path.GetFullPath(inPath));
+
+        byte[] key = Encoding.UTF8.GetBytes("key12345"); 
+        var des = new cryptography.ciphers.DES.DES();
+        var context = new SymmetricContext(des, key, EncryptionModes.PCBC, PaddingModes.PKCS7);
+
+        await context.EncryptAsync(inPath, outPathEnc);
+        
+        _output.WriteLine(Path.GetFullPath(inPath) + "  out: " + Path.GetFullPath(outPathEnc));
+        await context.DecryptAsync(outPathEnc, outPathDec);
+
+        byte[] originalBytes = await File.ReadAllBytesAsync(inPath);
+        byte[] decryptedBytes = await File.ReadAllBytesAsync(outPathDec);
+
+        Assert.Equal(originalBytes.Length, decryptedBytes.Length);
+        Assert.Equal(originalBytes, decryptedBytes);
+
+        byte[] encryptedBytes = await File.ReadAllBytesAsync(outPathEnc);
+        Assert.NotEqual(originalBytes, encryptedBytes);
+        
+    }
+    
+    [Fact]
+    public async Task Des_Pdf_Test()
+    {
+        string baseDir = AppContext.BaseDirectory;
+        string inPath = Path.Combine(baseDir, "../../../TestFiles/test.pdf"); 
+        string outPathEnc = Path.Combine(baseDir, "../../../DES/results/encrypted/test_encrypted.bin");
+        string outPathDec = Path.Combine(baseDir, "../../../DES/results/decrypted/test_decrypted.pdf");
+
+        if (!File.Exists(inPath)) 
+            throw new FileNotFoundException("Исходный файл не найден по пути: " + Path.GetFullPath(inPath));
+
+        byte[] key = Encoding.UTF8.GetBytes("key12345"); 
+        var des = new cryptography.ciphers.DES.DES();
+        var context = new SymmetricContext(des, key, EncryptionModes.RandomDelta, PaddingModes.ISO_10126);
+
+        await context.EncryptAsync(inPath, outPathEnc);
+        
+        _output.WriteLine(Path.GetFullPath(inPath) + "  out: " + Path.GetFullPath(outPathEnc));
+        await context.DecryptAsync(outPathEnc, outPathDec);
+
+        byte[] originalBytes = await File.ReadAllBytesAsync(inPath);
+        byte[] decryptedBytes = await File.ReadAllBytesAsync(outPathDec);
+
+        Assert.Equal(originalBytes.Length, decryptedBytes.Length);
+        Assert.Equal(originalBytes, decryptedBytes);
+
+        byte[] encryptedBytes = await File.ReadAllBytesAsync(outPathEnc);
+        Assert.NotEqual(originalBytes, encryptedBytes);
+        
+    }
+    
+    [Fact]
+    public async Task Des_Txt_Test()
+    {
+        string baseDir = AppContext.BaseDirectory;
+        string inPath = Path.Combine(baseDir, "../../../TestFiles/test.txt"); 
+        string outPathEnc = Path.Combine(baseDir, "../../../DES/results/encrypted/test_encrypted.txt");
+        string outPathDec = Path.Combine(baseDir, "../../../DES/results/decrypted/test_decrypted.txt");
+
+        if (!File.Exists(inPath)) 
+            throw new FileNotFoundException("Исходный файл не найден по пути: " + Path.GetFullPath(inPath));
+
+        byte[] key = Encoding.UTF8.GetBytes("key12345"); 
+        var des = new cryptography.ciphers.DES.DES();
+        var context = new SymmetricContext(des, key, EncryptionModes.CFB, PaddingModes.Zeros);
+
+        await context.EncryptAsync(inPath, outPathEnc);
+        
+        _output.WriteLine(Path.GetFullPath(inPath) + "  out: " + Path.GetFullPath(outPathEnc));
+        await context.DecryptAsync(outPathEnc, outPathDec);
+
+        byte[] originalBytes = await File.ReadAllBytesAsync(inPath);
+        byte[] decryptedBytes = await File.ReadAllBytesAsync(outPathDec);
+
+        Assert.Equal(originalBytes.Length, decryptedBytes.Length);
+        Assert.Equal(originalBytes, decryptedBytes);
+
+        byte[] encryptedBytes = await File.ReadAllBytesAsync(outPathEnc);
+        Assert.NotEqual(originalBytes, encryptedBytes);
+        
     }
 }
