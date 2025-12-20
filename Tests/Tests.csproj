@@ -28,6 +28,8 @@
       <Folder Include="DEAL\results\encrypted\" />
       <Folder Include="DES\results\decrypted\" />
       <Folder Include="DES\results\encrypted\" />
+      <Folder Include="TripleDES\results\decrypted\" />
+      <Folder Include="TripleDES\results\encrypted\" />
     </ItemGroup>
 
 </Project>
