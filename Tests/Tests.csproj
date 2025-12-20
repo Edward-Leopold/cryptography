@@ -24,6 +24,8 @@
 
     <ItemGroup>
       <Folder Include="Components\" />
+      <Folder Include="DEAL\results\decrypted\" />
+      <Folder Include="DEAL\results\encrypted\" />
       <Folder Include="DES\results\decrypted\" />
       <Folder Include="DES\results\encrypted\" />
     </ItemGroup>
